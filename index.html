@@ -95,7 +95,12 @@
     <link rel="shortcut icon" href="favicon.png" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
 
-    <script src="js/knockout-2.2.1.js"></script>
+    <script src="components/knockout/build/output/knockout-latest.js"></script>
+    <script src="components/d3/d3.min.js"></script>
+    <script src="components/novus-nvd3-7db5fa3/nv.d3.js"></script>
+    <script src="components/jquery/jquery.min.js"></script>
+
+    <link src="components/novus-nvd3-7db5fa3/src/nv.d3.css" rel="stylesheet">
 
     <style type="text/css">
         .small-li li {
@@ -158,11 +163,11 @@
     
 -->
 <div id="impress">
-    <div id="example1" class="step" data-x="-1000" data-y="-1500">
+    <div id="example1" class="step" data-x="-2000" data-y="-1500">
         <h1 data-bind="text: count"></h1>
     </div>
 
-    <div id="example1Behind" class="step slide" data-x="-1000" data-y="-1500" data-z="-1" data-rotate-y="180">
+    <div id="example1Behind" class="step slide" data-x="-2000" data-y="-1500" data-z="-1" data-rotate-y="180">
         <h1>example1 Behind</h1>
         <div>
         <pre>
@@ -183,69 +188,122 @@
         <h1>example2 Behind</h1>
     </div>
 
-    <div id="example3" class="step slide small-li" data-x="1000" data-y="-1500">
+    <div id="example3" class="step slide small-li" data-x="2000" data-y="-1500">
         <h1>example3</h1>
         <div data-bind="foreach: pairs">
             <li>(<span data-bind="text: l"></span>, <span data-bind="text: r"></span>)</li>
         </div>
     </div>
 
-    <div id="example3Behind" class="step slide" data-x="1000" data-y="-1500" data-z="-1" data-rotate-y="180">
+    <div id="example3Behind" class="step slide" data-x="2000" data-y="-1500" data-z="-1" data-rotate-y="180">
         <h1>example3 Behind</h1>
     </div>
 
+    <div id="example4" class="step" data-x="0" data-y="0" data-scale="4">
+        <div id='chart'>
+            <svg style='height:500px'> </svg>
+        </div>
+    </div>
+
     <script type="text/javascript">
-        var ViewModel = function() {
-            var self = this;
+        $(function(){
+            var ViewModel = function() {
+                var self = this;
 
-            self.min = ko.observable(1);
-            self.max = ko.observable(20);
-            self.count = ko.observable(self.min());
-            self.numbers = ko.observableArray([]);
+                self.min = ko.observable(1);
+                self.max = ko.observable(20);
+                self.count = ko.observable(self.min());
+                self.numbers = ko.observableArray([]);
 
-            self.pairs = ko.computed(function() {
-                var p = [];
-                var limit = self.numbers().length - 1;
-                for (var i = 0; i < limit; i++) {
-                    p.push({
-                        l: self.numbers()[i],
-                        r: self.numbers()[i + 1]
+                self.pairs = ko.computed(function() {
+                    var p = [];
+                    var limit = self.numbers().length - 1;
+                    for (var i = 0; i < limit; i++) {
+                        p.push({
+                            id: i,
+                            l: self.numbers()[i],
+                            r: self.numbers()[i + 1]
+                        });
+                    }
+                    return p;
+                });
+
+                self.reset = function() {
+                    self.numbers([]);
+                    for(var i = 0; i < self.max(); i++) {
+                        self.numbers.push(i);
+                    }
+                }
+
+                self.removeMultiples = function() {
+                    self.numbers(self.numbers().filter(function(n) {
+                        return n % model.count() != 0;
+                    }))
+                }
+
+                self.update = function() {
+                    if (model.count() >= model.max()) {
+                        self.reset();
+                        model.count(model.min());
+                    }
+                    else {
+                        model.count(model.count() + 1);
+                        self.removeMultiples();
+                    }
+                }
+
+                self.reset();
+            };
+
+            var model = new ViewModel();
+
+            var ChartView = function(theModel) {
+                nv.addGraph(function() {
+                    var chart = nv.models.scatterChart()
+                            .showDistX(true)
+                            .showDistY(true)
+                            .color(d3.scale.category10().range());
+
+                    chart.xAxis.tickFormat(d3.format('.02f'))
+                    chart.yAxis.tickFormat(d3.format('.02f'))
+
+                    var width = 500;
+                    var height = 500;
+
+                    var xScale = d3.scale.linear()
+                            .domain([theModel.min(), theModel.max()])
+                            .range([0, width])
+                            .clamp(true);
+
+                    var yScale = d3.scale.linear()
+                            .domain([theModel.min(), theModel.max()])
+                            .range([0, height])
+                            .clamp(true);
+
+                    var values = theModel.pairs().map(function(p) {
+                        return {
+                            x: xScale(p.l),
+                            y: yScale(p.r),
+                            size: yScale(p.id)
+                        }
                     });
-                }
-                return p;
-            });
 
-            self.reset = function() {
-                self.numbers([]);
-                for(var i = 0; i < self.max(); i++) {
-                    self.numbers.push(i);
-                }
+                    d3.select('#chart svg')
+                            .datum([{key: 'pairs', values: values}])
+                            .transition().duration(500)
+                            .call(chart);
+
+                    nv.utils.windowResize(chart.update);
+
+                    return chart;
+                });
             }
 
-            self.removeMultiples = function() {
-                self.numbers(self.numbers().filter(function(n) {
-                    return n % model.count() != 0;
-                }))
-            }
+            new ChartView(model);
 
-            self.update = function() {
-                if (model.count() >= model.max()) {
-                    self.reset();
-                    model.count(model.min());
-                }
-                else {
-                    model.count(model.count() + 1);
-                    self.removeMultiples();
-                }
-            }
-
-            self.reset();
-        };
-
-        var model = new ViewModel();
-
-        ko.applyBindings(model);
-        setInterval(model.update, 1000);
+            ko.applyBindings(model);
+            setInterval(model.update, 1000);
+        });
     </script>
 
     <!--
@@ -258,11 +316,11 @@
         down (4 times) to make it back to it's correct size.
         
     -->
-    <div id="title" class="step" data-x="0" data-y="0" data-scale="4">
-        <span class="try">then you should try</span>
-        <h1>impress.js<sup>*</sup></h1>
-        <span class="footnote"><sup>*</sup> no rhyme intended</span>
-    </div>
+    <!--<div id="title" class="step" data-x="0" data-y="0" data-scale="4">-->
+        <!--<span class="try">then you should try</span>-->
+        <!--<h1>impress.js<sup>*</sup></h1>-->
+        <!--<span class="footnote"><sup>*</sup> no rhyme intended</span>-->
+    <!--</div>-->
 
     <!--
         
