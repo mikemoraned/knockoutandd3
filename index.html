@@ -96,6 +96,16 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
 
     <script src="js/knockout-2.2.1.js"></script>
+
+    <style type="text/css">
+        .small-li li {
+            float: left;
+            list-style-type: none;
+        }
+        .small-li li:not(:last-child):after {
+            content: ", "
+        }
+    </style>
 </head>
 
 <!--
@@ -148,44 +158,95 @@
     
 -->
 <div id="impress">
-
-
-
-
     <div id="example1" class="step" data-x="-1000" data-y="-1500">
         <h1 data-bind="text: count"></h1>
-
-        <script type="text/javascript">
-            var model = {
-                count : ko.observable(1)
-            };
-            ko.applyBindings(model);
-        </script>
     </div>
 
     <div id="example1Behind" class="step slide" data-x="-1000" data-y="-1500" data-z="-1" data-rotate-y="180">
         <h1>example1 Behind</h1>
         <div>
         <pre>
-            var model = {
-                count : ko.observable(1)
-            };
-            ko.applyBindings(model);
+
         </pre>
         </div>
     </div>
 
-    <div id="example2" class="step slide" data-x="0" data-y="-1500">
+    <div id="example2" class="step slide small-li" data-x="0" data-y="-1500">
         <h1>example2</h1>
+        <h2>Remove multiples of <span data-bind="text: count"></span> from <span data-bind="text: min"></span>...<span data-bind="text: max"></span></h2>
+        <div data-bind="foreach: numbers">
+            <li><span data-bind="text: $data"></span></li>
+        </div>
     </div>
 
     <div id="example2Behind" class="step slide" data-x="0" data-y="-1500" data-z="-1" data-rotate-y="180">
         <h1>example2 Behind</h1>
     </div>
 
-    <div class="step slide" data-x="1000" data-y="-1500">
-        <q>Would you like to <strong>impress your audience</strong> with <strong>stunning visualization</strong> of your talk?</q>
+    <div id="example3" class="step slide small-li" data-x="1000" data-y="-1500">
+        <h1>example3</h1>
+        <div data-bind="foreach: pairs">
+            <li>(<span data-bind="text: l"></span>, <span data-bind="text: r"></span>)</li>
+        </div>
     </div>
+
+    <div id="example3Behind" class="step slide" data-x="1000" data-y="-1500" data-z="-1" data-rotate-y="180">
+        <h1>example3 Behind</h1>
+    </div>
+
+    <script type="text/javascript">
+        var ViewModel = function() {
+            var self = this;
+
+            self.min = ko.observable(1);
+            self.max = ko.observable(20);
+            self.count = ko.observable(self.min());
+            self.numbers = ko.observableArray([]);
+
+            self.pairs = ko.computed(function() {
+                var p = [];
+                var limit = self.numbers().length - 1;
+                for (var i = 0; i < limit; i++) {
+                    p.push({
+                        l: self.numbers()[i],
+                        r: self.numbers()[i + 1]
+                    });
+                }
+                return p;
+            });
+
+            self.reset = function() {
+                self.numbers([]);
+                for(var i = 0; i < self.max(); i++) {
+                    self.numbers.push(i);
+                }
+            }
+
+            self.removeMultiples = function() {
+                self.numbers(self.numbers().filter(function(n) {
+                    return n % model.count() != 0;
+                }))
+            }
+
+            self.update = function() {
+                if (model.count() >= model.max()) {
+                    self.reset();
+                    model.count(model.min());
+                }
+                else {
+                    model.count(model.count() + 1);
+                    self.removeMultiples();
+                }
+            }
+
+            self.reset();
+        };
+
+        var model = new ViewModel();
+
+        ko.applyBindings(model);
+        setInterval(model.update, 1000);
+    </script>
 
     <!--
         
