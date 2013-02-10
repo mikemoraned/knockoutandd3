@@ -258,7 +258,7 @@
 
             var model = new ViewModel();
 
-            var ChartView = function() {
+            var ChartView = function(selector) {
                 var self = this;
 
                 var chart = nv.models.scatterChart()
@@ -272,7 +272,7 @@
 
                 self.update = function(newPairs) {
                     if (newPairs) {
-                        d3.select('#chart svg')
+                        d3.select(selector)
                                 .datum([{key: 'pairs', values: newPairs}])
                                 .transition().duration(300)
                                 .call(chart);
@@ -286,7 +286,7 @@
                 });
             }
 
-            var chartView = new ChartView();
+            var chartView = new ChartView('#chart svg');
             model.pairs.subscribe(chartView.update);
             chartView.update(model.pairs());
 
