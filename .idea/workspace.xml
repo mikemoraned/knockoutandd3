@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cc0f5d2e-f3c8-4077-8e5b-f2490c4d52d3" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/component.json" afterPath="$PROJECT_DIR$/component.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
     </list>
     <ignored path="knockoutandd3.iws" />
@@ -28,7 +27,7 @@
       <file leaf-file-name="index.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="180" column="45" selection-start="8032" selection-end="8032" vertical-scroll-proportion="-0.39073515">
+            <state line="218" column="6" selection-start="9187" selection-end="9187" vertical-scroll-proportion="-0.11940298">
               <folding />
             </state>
           </provider>
@@ -448,7 +447,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="180" column="45" selection-start="8032" selection-end="8032" vertical-scroll-proportion="-0.39073515">
+        <state line="218" column="6" selection-start="9187" selection-end="9187" vertical-scroll-proportion="-0.11940298">
           <folding />
         </state>
       </provider>

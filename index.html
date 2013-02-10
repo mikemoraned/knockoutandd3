@@ -192,33 +192,58 @@ setInterval(model.update, 1000);
     </div>
 
     <div id="example2" class="live step slide small-li" data-x="0" data-y="-1500">
-        <h1>example2</h1>
-        <h2>Remove multiples of <span data-bind="text: count"></span></span></h2>
+        <h1>Remove multiples of <span data-bind="text: count"></span></h1>
         <ul data-bind="foreach: numbers">
             <li><span data-bind="text: $data"></span></li>
         </ul>
     </div>
 
     <div id="example2Behind" class="step slide" data-x="0" data-y="-1500" data-z="-1" data-rotate-y="180">
-        <h1>example2 Behind</h1>
+        <h1>Javascript</h1>
+        <pre class="prettyprint lang-javascript">
+...
+self.numbers = ko.computed(function() {
+    return _.range(0, max).filter(function(n) {
+        return n % self.count() != 0;
+    });
+});
+...
+</pre>
+        <h1>Html</h1>
+        <pre class="prettyprint lang-html">
+&lt;h1&gt;Remove multiples of
+          &lt;span data-bind="text: count"&gt;&lt;/span&gt;&lt;/h1&gt;
+&lt;ul data-bind="foreach: numbers"&gt;
+    &lt;li&gt;&lt;span data-bind="text: $data"&gt;&lt;/span&gt;&lt;/li&gt;
+&lt;/ul>
+</pre>
     </div>
 
-    <div id="example3" class="live step slide small-li" data-x="2000" data-y="-1500">
-        <h1>example3</h1>
-        <h2>Derive pairs:</h2>
-        <ul data-bind="foreach: pairs">
-            <li>(<span data-bind="text: l"></span>, <span data-bind="text: r"></span>)</li>
-        </ul>
-    </div>
-
-    <div id="example3Behind" class="step slide" data-x="2000" data-y="-1500" data-z="-1" data-rotate-y="180">
-        <h1>example3 Behind</h1>
-    </div>
-
-    <div id="example4" class="live step slide" data-x="0" data-y="400" data-scale="4">
+    <div id="example4" class="live step slide" data-x="-2000" data-y="400" data-z="0" data-scale="4">
         <div id='chart'>
             <svg style='height:100%; width:100%'> </svg>
         </div>
+    </div>
+
+    <div id="example4Behind" class="step slide" data-x="-2000" data-y="400" data-z="-1" data-rotate-y="180" data-scale="4">
+        <h1>Javascript</h1>
+        <pre class="prettyprint lang-javascript">
+...
+self.numbers = ko.computed(function() {
+    return _.range(0, max).filter(function(n) {
+        return n % self.count() != 0;
+    });
+});
+...
+</pre>
+        <h1>Html</h1>
+        <pre class="prettyprint lang-html">
+&lt;h1&gt;Remove multiples of
+          &lt;span data-bind="text: count"&gt;&lt;/span&gt;&lt;/h1&gt;
+&lt;ul data-bind="foreach: numbers"&gt;
+    &lt;li&gt;&lt;span data-bind="text: $data"&gt;&lt;/span&gt;&lt;/li&gt;
+&lt;/ul>
+</pre>
     </div>
 
     <script type="text/javascript">
