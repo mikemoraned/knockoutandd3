@@ -100,6 +100,7 @@
     <script src="components/nvd3/nv.d3.js"></script>
     <script src="components/jquery/jquery.min.js"></script>
     <script src="components/google-code-prettify/src/prettify.js"></script>
+    <script src="components/underscore/underscore-min.js"></script>
 
     <link href="components/nvd3/src/nv.d3.css" rel="stylesheet">
     <link href="components/google-code-prettify/src/prettify.css" rel="stylesheet">
@@ -173,10 +174,16 @@
         <h1>Javascript</h1>
         <pre class="prettyprint lang-javascript">
 var ViewModel = function() {
-    this.count = ko.observable(0);
+    var self = this;
+    var max = 20;
+    self.count = ko.observable(0);
+    self.update = function() {
+        self.count((self.count() + 1) % max);
+    };
 };
 var model = new ViewModel();
 ko.applyBindings(model);
+setInterval(model.update, 1000);
 </pre>
         <h1>Html</h1>
         <pre class="prettyprint lang-html">
@@ -186,7 +193,7 @@ ko.applyBindings(model);
 
     <div id="example2" class="live step slide small-li" data-x="0" data-y="-1500">
         <h1>example2</h1>
-        <h2>Remove multiples of <span data-bind="text: count"></span> from <span data-bind="text: min"></span>...<span data-bind="text: max"></span></h2>
+        <h2>Remove multiples of <span data-bind="text: count"></span></span></h2>
         <ul data-bind="foreach: numbers">
             <li><span data-bind="text: $data"></span></li>
         </ul>
@@ -219,10 +226,18 @@ ko.applyBindings(model);
             var ViewModel = function() {
                 var self = this;
 
-                self.min = ko.observable(1);
-                self.max = ko.observable(20);
-                self.count = ko.observable(self.min());
-                self.numbers = ko.observableArray([]);
+                var max = 20;
+                self.count = ko.observable(0);
+
+                self.update = function() {
+                    self.count((self.count() + 1) % max);
+                };
+
+                self.numbers = ko.computed(function() {
+                    return _.range(0, max).filter(function(n) {
+                        return n % self.count() != 0;
+                    });
+                });
 
                 self.pairs = ko.computed(function() {
                     var p = [];
@@ -236,32 +251,6 @@ ko.applyBindings(model);
                     }
                     return p;
                 });
-
-                self.reset = function() {
-                    self.numbers([]);
-                    for(var i = 0; i < self.max(); i++) {
-                        self.numbers.push(i);
-                    }
-                }
-
-                self.removeMultiples = function() {
-                    self.numbers(self.numbers().filter(function(n) {
-                        return n % model.count() != 0;
-                    }))
-                }
-
-                self.update = function() {
-                    if (model.count() >= model.max()) {
-                        self.reset();
-                        model.count(model.min());
-                    }
-                    else {
-                        model.count(model.count() + 1);
-                        self.removeMultiples();
-                    }
-                }
-
-                self.reset();
             };
 
             var model = new ViewModel();
@@ -292,7 +281,7 @@ ko.applyBindings(model);
 
                     return chart;
                 });
-            }
+            };
 
             var chartView = new ChartView('#chart svg');
             model.pairs.subscribe(chartView.update);
