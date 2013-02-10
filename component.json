@@ -2,6 +2,9 @@
   "name": "knockoutandd3",
   "version": "0.0.1",
   "dependencies": {
-    "nvd3": "git://github.com/arlm/nvd3.git"
+    "nvd3": "git://github.com/arlm/nvd3.git",
+    "d3": "~3.0.6",
+    "knockout": "~2.2.1",
+    "jquery": "~1.9.1"
   }
 }
