@@ -265,14 +265,9 @@ self.numbers = ko.computed(function() {
                 });
 
                 self.pairs = ko.computed(function() {
-                    var p = [];
-                    var limit = self.numbers().length - 1;
-                    for (var i = 0; i < limit; i++) {
-                        p.push({
-                            id: i,
-                            l: self.numbers()[i],
-                            r: self.numbers()[i + 1]
-                        });
+                    var p = []; var n = self.numbers();
+                    for (var i = 0; i < n.length - 1; i++) {
+                        p.push({ id: i, l: n[i], r: n[i + 1] });
                     }
                     return p;
                 });
