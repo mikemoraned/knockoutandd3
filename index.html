@@ -267,7 +267,7 @@ self.numbers = ko.computed(function() {
                 self.pairs = ko.computed(function() {
                     var p = []; var n = self.numbers();
                     for (var i = 0; i < n.length - 1; i++) {
-                        p.push({ id: i, l: n[i], r: n[i + 1] });
+                        p.push({ l: n[i], r: n[i + 1] });
                     }
                     return p;
                 });
@@ -281,7 +281,7 @@ self.numbers = ko.computed(function() {
                 var chart = nv.models.scatterChart()
                         .x(function(d) { return d.l; })
                         .y(function(d) { return d.r; })
-                        .size(function(d) { return d.id; })
+                        .size(function(d) { return d.l * d.r; })
                         .color(d3.scale.category10().range());
 
                 chart.xAxis.tickFormat(d3.format('.02f'));
