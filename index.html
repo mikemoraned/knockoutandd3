@@ -99,8 +99,11 @@
     <script src="components/d3/d3.min.js"></script>
     <script src="components/nvd3/nv.d3.js"></script>
     <script src="components/jquery/jquery.min.js"></script>
+    <script src="components/google-code-prettify/src/prettify.js"></script>
+    <script src="components/underscore/underscore-min.js"></script>
 
     <link href="components/nvd3/src/nv.d3.css" rel="stylesheet">
+    <link href="components/google-code-prettify/src/prettify.css" rel="stylesheet">
 
     <style type="text/css">
         .small-li li {
@@ -109,6 +112,23 @@
         }
         .small-li li:not(:last-child):after {
             content: ", "
+        }
+
+        .centered {
+            height: 400px; /*Set line-height to this value*/
+            width: 100%;
+            margin: 100px auto;
+        }
+
+        .centered h1 {
+            font-size: 300px;
+            line-height: 400px;
+            text-align: center;
+        }
+
+        #example2 {
+            font-size: 4em;
+            line-height: 1em;
         }
     </style>
 </head>
@@ -163,47 +183,82 @@
     
 -->
 <div id="impress">
-    <div id="example1" class="step" data-x="-2000" data-y="-1500">
-        <h1 data-bind="text: count"></h1>
-    </div>
-
-    <div id="example1Behind" class="step slide" data-x="-2000" data-y="-1500" data-z="-1" data-rotate-y="180">
-        <h1>example1 Behind</h1>
-        <div>
-        <pre>
-
-        </pre>
+    <div id="example1" class="live step slide" data-x="-2000" data-y="-1500" data-z="0">
+        <div class="centered">
+            <h1 data-bind="text: count"></h1>
         </div>
     </div>
 
-    <div id="example2" class="step slide small-li" data-x="0" data-y="-1500">
-        <h1>example2</h1>
-        <h2>Remove multiples of <span data-bind="text: count"></span> from <span data-bind="text: min"></span>...<span data-bind="text: max"></span></h2>
+    <div id="example1Behind" class="step slide" data-x="-2000" data-y="-1500" data-z="-1" data-rotate-y="180">
+        <h1>Javascript</h1>
+        <pre class="prettyprint lang-javascript">
+var ViewModel = function() {
+    var self = this;
+    var max = 20;
+    self.count = ko.observable(0);
+    self.update = function() {
+        self.count((self.count() + 1) % max);
+    };
+};
+var model = new ViewModel();
+ko.applyBindings(model);
+setInterval(model.update, 1000);
+</pre>
+        <h1>Html</h1>
+        <pre class="prettyprint lang-html">
+&lt;h1 data-bind="text: count"&gt;&lt;h1&gt;
+</pre>
+    </div>
+
+    <div id="example2" class="live step slide small-li" data-x="0" data-y="-1500">
+        <h1>Remove multiples of <span data-bind="text: count"></span></h1>
         <ul data-bind="foreach: numbers">
             <li><span data-bind="text: $data"></span></li>
         </ul>
     </div>
 
     <div id="example2Behind" class="step slide" data-x="0" data-y="-1500" data-z="-1" data-rotate-y="180">
-        <h1>example2 Behind</h1>
+        <h1>Javascript</h1>
+        <pre class="prettyprint lang-javascript">
+...
+self.numbers = ko.computed(function() {
+    return _.range(0, max).filter(function(n) {
+        return n % self.count() != 0;
+    });
+});
+...
+</pre>
+        <h1>Html</h1>
+        <pre class="prettyprint lang-html">
+&lt;h1&gt;Remove multiples of
+          &lt;span data-bind="text: count"&gt;&lt;/span&gt;&lt;/h1&gt;
+&lt;ul data-bind="foreach: numbers"&gt;
+    &lt;li&gt;&lt;span data-bind="text: $data"&gt;&lt;/span&gt;&lt;/li&gt;
+&lt;/ul>
+</pre>
     </div>
 
-    <div id="example3" class="step slide small-li" data-x="2000" data-y="-1500">
-        <h1>example3</h1>
-        <h2>Derive pairs:</h2>
-        <ul data-bind="foreach: pairs">
-            <li>(<span data-bind="text: l"></span>, <span data-bind="text: r"></span>)</li>
-        </ul>
-    </div>
-
-    <div id="example3Behind" class="step slide" data-x="2000" data-y="-1500" data-z="-1" data-rotate-y="180">
-        <h1>example3 Behind</h1>
-    </div>
-
-    <div id="example4" class="step" data-x="0" data-y="0" data-scale="4">
+    <div id="example4" class="live step slide" data-x="-2000" data-y="400" data-z="0" data-scale="4">
         <div id='chart'>
-            <svg style='height:500px'> </svg>
+            <svg style='height:100%; width:100%'> </svg>
         </div>
+    </div>
+
+    <div id="example4Behind" class="step slide" data-x="-2000" data-y="400" data-z="-1" data-rotate-y="180" data-scale="4">
+        <h1>Javascript</h1>
+        <pre class="prettyprint lang-javascript">
+...
+self.pairs = ko.computed(function() {
+    var p = []; var n = self.numbers();
+    for (var i = 0; i < n.length - 1; i++) {
+        p.push({ l: n[i], r: n[i + 1] });
+    }
+    return p;
+};
+...
+var chartView = new ChartView('#chart svg');
+model.pairs.subscribe(chartView.update);
+</pre>
     </div>
 
     <script type="text/javascript">
@@ -211,49 +266,26 @@
             var ViewModel = function() {
                 var self = this;
 
-                self.min = ko.observable(1);
-                self.max = ko.observable(20);
-                self.count = ko.observable(self.min());
-                self.numbers = ko.observableArray([]);
+                var max = 20;
+                self.count = ko.observable(0);
+
+                self.update = function() {
+                    self.count((self.count() + 1) % max);
+                };
+
+                self.numbers = ko.computed(function() {
+                    return _.range(0, max).filter(function(n) {
+                        return n % self.count() != 0;
+                    });
+                });
 
                 self.pairs = ko.computed(function() {
-                    var p = [];
-                    var limit = self.numbers().length - 1;
-                    for (var i = 0; i < limit; i++) {
-                        p.push({
-                            id: i,
-                            l: self.numbers()[i],
-                            r: self.numbers()[i + 1]
-                        });
+                    var p = []; var n = self.numbers();
+                    for (var i = 0; i < n.length - 1; i++) {
+                        p.push({ l: n[i], r: n[i + 1] });
                     }
                     return p;
                 });
-
-                self.reset = function() {
-                    self.numbers([]);
-                    for(var i = 0; i < self.max(); i++) {
-                        self.numbers.push(i);
-                    }
-                }
-
-                self.removeMultiples = function() {
-                    self.numbers(self.numbers().filter(function(n) {
-                        return n % model.count() != 0;
-                    }))
-                }
-
-                self.update = function() {
-                    if (model.count() >= model.max()) {
-                        self.reset();
-                        model.count(model.min());
-                    }
-                    else {
-                        model.count(model.count() + 1);
-                        self.removeMultiples();
-                    }
-                }
-
-                self.reset();
             };
 
             var model = new ViewModel();
@@ -264,7 +296,7 @@
                 var chart = nv.models.scatterChart()
                         .x(function(d) { return d.l; })
                         .y(function(d) { return d.r; })
-                        .size(function(d) { return d.id; })
+                        .size(function(d) { return d.l * d.r; })
                         .color(d3.scale.category10().range());
 
                 chart.xAxis.tickFormat(d3.format('.02f'));
@@ -284,13 +316,15 @@
 
                     return chart;
                 });
-            }
+            };
 
             var chartView = new ChartView('#chart svg');
             model.pairs.subscribe(chartView.update);
             chartView.update(model.pairs());
 
-            ko.applyBindings(model);
+            $(".live").each(function() { ko.applyBindings(model, this); });
+
+            prettyPrint();
 
             setInterval(model.update, 1000);
         });

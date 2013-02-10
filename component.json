@@ -5,6 +5,8 @@
     "nvd3": "git://github.com/arlm/nvd3.git",
     "d3": "~3.0.6",
     "knockout": "~2.2.1",
-    "jquery": "~1.9.1"
+    "jquery": "~1.9.1",
+    "google-code-prettify": "~1.0.0",
+    "underscore": "~1.4.4"
   }
 }
