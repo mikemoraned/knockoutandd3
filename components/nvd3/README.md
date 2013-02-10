@@ -31,7 +31,7 @@ fork's root directory will rebuild both `nv.d3.js` and `nv.d3.min.js`.
 
 Without UglifyJS, you won't get the minified version when running make.
 
-**We ask that you DO NOT minify pull requests...
+**We ask that you DO NOT minify pull requests... 
 If you need to minify please build pull request in separate branch, and
 merge and minify in yout master.
 

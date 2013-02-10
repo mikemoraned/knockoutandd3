@@ -101,7 +101,6 @@
     <script src="components/jquery/jquery.min.js"></script>
     <script src="components/google-code-prettify/src/prettify.js"></script>
     <script src="components/underscore/underscore-min.js"></script>
-    <script src="components/FitText.js/jquery.fittext.js"></script>
 
     <link href="components/nvd3/src/nv.d3.css" rel="stylesheet">
     <link href="components/google-code-prettify/src/prettify.css" rel="stylesheet">
@@ -320,8 +319,6 @@ model.pairs.subscribe(chartView.update);
             $(".live").each(function() { ko.applyBindings(model, this); });
 
             prettyPrint();
-
-//            $(".fit").fitText(0.3);
 
             setInterval(model.update, 1000);
         });
