@@ -258,41 +258,40 @@
 
             var model = new ViewModel();
 
-            var ChartView = function(theModel) {
+            var ChartView = function() {
                 var self = this;
 
                 var chart = nv.models.scatterChart()
                         .x(function(d) { return d.l; })
                         .y(function(d) { return d.r; })
                         .size(function(d) { return d.id; })
-//                        .showDistX(true)
-//                        .showDistY(true)
                         .color(d3.scale.category10().range());
 
-                chart.xAxis.tickFormat(d3.format('.02f'))
-                chart.yAxis.tickFormat(d3.format('.02f'))
+                chart.xAxis.tickFormat(d3.format('.02f'));
+                chart.yAxis.tickFormat(d3.format('.02f'));
 
-                self.update = function() {
-                    d3.select('#chart svg')
-                            .datum([{key: 'pairs', values: theModel.pairs()}])
-                            .transition().duration(300)
-                            .call(chart);
+                self.update = function(newPairs) {
+                    if (newPairs) {
+                        d3.select('#chart svg')
+                                .datum([{key: 'pairs', values: newPairs}])
+                                .transition().duration(300)
+                                .call(chart);
+                    }
                 };
 
                 nv.addGraph(function() {
-                    self.update();
-
                     nv.utils.windowResize(chart.update);
 
                     return chart;
                 });
-
-                theModel.pairs.subscribe(self.update);
             }
 
-            new ChartView(model);
+            var chartView = new ChartView();
+            model.pairs.subscribe(chartView.update);
+            chartView.update(model.pairs());
 
             ko.applyBindings(model);
+
             setInterval(model.update, 1000);
         });
     </script>
