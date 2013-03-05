@@ -1,0 +1,1 @@
+A small demonstration of knockout data binding.
