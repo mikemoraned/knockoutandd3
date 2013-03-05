@@ -68,7 +68,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=1024" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <title>impress.js | presentation tool based on the power of CSS3 transforms and transitions in modern browsers | by Bartek Szopka @bartaz</title>
+    <title>data-binding in knockout.js</title>
     
     <meta name="description" content="impress.js is a presentation tool based on the power of CSS3 transforms and transitions in modern browsers and inspired by the idea behind prezi.com." />
     <meta name="author" content="Bartek Szopka" />
@@ -129,6 +129,10 @@
         #example2 {
             font-size: 4em;
             line-height: 1em;
+        }
+
+        pre[class~='prettyprint'] {
+            font-family: monospace;
         }
     </style>
 </head>
@@ -202,12 +206,12 @@
         <h1>Javascript</h1>
         <pre class="prettyprint lang-javascript">
 var ViewModel = function() {
-    var self = this;
-    var max = 20;
-    self.count = ko.observable(0);
-    self.update = function() {
-        self.count((self.count() + 1) % max);
-    };
+  var self = this;
+  self.count = ko.observable(0); // define
+  self.update = function() {
+    var prev = self.count();     // read
+    self.count((prev + 1) % 20); // update
+  };
 };
 var model = new ViewModel();
 ko.applyBindings(model);
@@ -222,28 +226,30 @@ setInterval(model.update, 1000);
     <div id="example2" class="live step slide small-li" data-x="0" data-y="-1500">
         <h1>Remove multiples of <span data-bind="text: count"></span></h1>
         <ul data-bind="foreach: numbers">
-            <li><span data-bind="text: $data"></span></li>
+            <li data-bind="text: $data"></li>
         </ul>
     </div>
 
     <div id="example2Behind" class="step slide" data-x="0" data-y="-1500" data-z="-1" data-rotate-y="180">
         <h1>Javascript</h1>
         <pre class="prettyprint lang-javascript">
-...
 self.numbers = ko.computed(function() {
-    return _.range(0, max).filter(function(n) {
-        return n % self.count() != 0;
-    });
+  var a = [];
+  for (var i = 0; i <= 20; i++) {
+    if (i % self.count() != 0) {
+      a.push(i);
+    }
+  }
+  return a;
 });
-...
 </pre>
         <h1>Html</h1>
         <pre class="prettyprint lang-html">
 &lt;h1&gt;Remove multiples of
-          &lt;span data-bind="text: count"&gt;&lt;/span&gt;&lt;/h1&gt;
+   &lt;span data-bind="text: count"&gt;&lt;/span&gt;&lt;/h1&gt;
 &lt;ul data-bind="foreach: numbers"&gt;
-    &lt;li&gt;&lt;span data-bind="text: $data"&gt;&lt;/span&gt;&lt;/li&gt;
-&lt;/ul>
+   &lt;li data-bind="text: $data"&gt;&lt;/li&gt;
+&lt;/ul&gt;
 </pre>
     </div>
 
@@ -256,15 +262,13 @@ self.numbers = ko.computed(function() {
     <div id="example4Behind" class="step slide" data-x="-2000" data-y="600" data-z="-1" data-rotate-y="180" data-scale="4">
         <h1>Javascript</h1>
         <pre class="prettyprint lang-javascript">
-...
 self.pairs = ko.computed(function() {
-    var p = []; var n = self.numbers();
-    for (var i = 0; i < n.length - 1; i++) {
-        p.push({ l: n[i], r: n[i + 1] });
-    }
-    return p;
+  var p = []; var n = self.numbers();
+  for (var i = 0; i < n.length - 1; i++) {
+    p.push({ x: n[i], y: n[i + 1] });
+  }
+  return p;
 };
-...
 var chartView = new ChartView('#chart svg');
 model.pairs.subscribe(chartView.update);
 </pre>
@@ -279,23 +283,27 @@ model.pairs.subscribe(chartView.update);
             var ViewModel = function() {
                 var self = this;
 
-                var max = 20;
                 self.count = ko.observable(0);
 
                 self.update = function() {
-                    self.count((self.count() + 1) % max);
+                    var prev = self.count();
+                    self.count((prev + 1) % 20);
                 };
 
                 self.numbers = ko.computed(function() {
-                    return _.range(0, max).filter(function(n) {
-                        return n % self.count() != 0;
-                    });
+                    var a = [];
+                    for (var i = 0; i <= 20; i++) {
+                        if (i % self.count() != 0) {
+                            a.push(i);
+                        }
+                    }
+                    return a;
                 });
 
                 self.pairs = ko.computed(function() {
                     var p = []; var n = self.numbers();
                     for (var i = 0; i < n.length - 1; i++) {
-                        p.push({ l: n[i], r: n[i + 1] });
+                        p.push({ x: n[i], y: n[i + 1] });
                     }
                     return p;
                 });
@@ -307,9 +315,9 @@ model.pairs.subscribe(chartView.update);
                 var self = this;
 
                 var chart = nv.models.scatterChart()
-                        .x(function(d) { return d.l; })
-                        .y(function(d) { return d.r; })
-                        .size(function(d) { return d.l * d.r; })
+                        .x(function(d) { return d.x; })
+                        .y(function(d) { return d.y; })
+                        .size(function(d) { return d.x * d.y; })
                         .color(d3.scale.category10().range());
 
                 chart.xAxis.tickFormat(d3.format('.02f'));
