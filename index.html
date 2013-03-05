@@ -137,6 +137,15 @@
             border-style: none;
             padding-bottom: 1em;
         }
+
+        div.progress {
+            height: 5px;
+        }
+
+        div.progress div.remaining {
+            height: 5px;
+            background-color: #d3d3d3;
+        }
     </style>
 </head>
 
@@ -198,6 +207,10 @@
     <div id="example1" class="live step slide" data-x="-2000" data-y="-1500" data-z="0">
         <div class="centered">
             <h1 data-bind="text: count"></h1>
+        </div>
+
+        <div class="progress" data-bind="with: countdown">
+            <div class="remaining" data-bind="style: { width: percentage }, click: reset"></div>
         </div>
     </div>
 
@@ -294,8 +307,30 @@ model.pairs.subscribe(view.update); // explicit
 
     <script type="text/javascript">
         $(function(){
+            var Countdown = function() {
+                var self = this;
+
+                self.tickSize = 1000;
+                self.max = 30 * 1000; //5 * 60 * 1000;
+                self.curr = ko.observable(0);
+
+                self.percentage = ko.computed(function() {
+                    return "" + (100.0 * Math.min(1.0, (self.max - self.curr()) / self.max)).toFixed(0) + "%";
+                });
+
+                self.start = function() {
+                    setInterval(function() { self.curr(self.curr() + self.tickSize); }, self.tickSize);
+                };
+
+                self.reset = function() {
+                    self.curr(0);
+                };
+            }
+
             var ViewModel = function() {
                 var self = this;
+
+                self.countdown = new Countdown();
 
                 self.count = ko.observable(0);
 
@@ -362,6 +397,7 @@ model.pairs.subscribe(view.update); // explicit
             prettyPrint();
 
             setInterval(model.update, 1000);
+            model.countdown.start();
         });
     </script>
 
