@@ -253,10 +253,13 @@ self.numbers = ko.computed(function() {
 </pre>
     </div>
 
-    <div id="example4" class="live step slide" data-x="-2000" data-y="600" data-z="0" data-scale="4">
+    <div id="example4" class="live step slide small-li" data-x="-2000" data-y="600" data-z="0" data-scale="4">
         <div id='chart'>
-            <svg style='height:100%; width:100%'> </svg>
+            <svg style='height:80%; width:100%'> </svg>
         </div>
+        <ul data-bind="foreach: pairs">
+            <li>(<span data-bind="text: x"></span>,<span data-bind="text: y"></span>)</li>
+        </ul>
     </div>
 
     <div id="example4Behind" class="step slide" data-x="-2000" data-y="600" data-z="-1" data-rotate-y="180" data-scale="4">
@@ -272,7 +275,15 @@ self.pairs = ko.computed(function() {
 var chartView = new ChartView('#chart svg');
 model.pairs.subscribe(chartView.update);
 </pre>
+        <h1>Html</h1>
+        <pre class="prettyprint lang-html">
+&lt;ul data-bind="foreach: pairs"&gt;
+  &lt;li&gt;(&lt;span data-bind="text: x"&gt;&lt;/span&gt;,
+    &lt;span data-bind="text: y"&gt;&lt;/span&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
     </div>
+
 
     <div id="endpage" class="live step" data-x="7000" data-y="1000" data-z="0" data-scale="17">
         <img src="img/ko-logo.png" width="500px"/>
