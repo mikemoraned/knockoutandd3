@@ -225,14 +225,14 @@ setInterval(model.update, 1000);
 </pre>
     </div>
 
-    <div id="example2" class="live step slide small-li" data-x="0" data-y="-1500">
+    <div id="example2" class="live step slide small-li" data-x="-2000" data-y="-3500" data-scale="2">
         <h1>Remove multiples of <span data-bind="text: count"></span></h1>
         <ul data-bind="foreach: numbers">
             <li data-bind="text: $data"></li>
         </ul>
     </div>
 
-    <div id="example2Behind" class="step slide" data-x="0" data-y="-1500" data-z="-1" data-rotate-y="180">
+    <div id="example2Behind" class="step slide" data-x="-2000" data-y="-3500" data-z="-1" data-rotate-y="180" data-scale="2">
         <h1>Javascript</h1>
         <pre class="prettyprint lang-javascript">
 self.numbers = ko.computed(function() {  // no args
@@ -255,7 +255,7 @@ self.numbers = ko.computed(function() {  // no args
 </pre>
     </div>
 
-    <div id="example4" class="live step slide small-li" data-x="-2000" data-y="600" data-z="0" data-scale="4">
+    <div id="example4" class="live step slide small-li" data-x="-2000" data-y="-6500" data-z="0" data-scale="4">
         <div id='chart'>
             <svg style='height:80%; width:100%'> </svg>
         </div>
@@ -264,7 +264,7 @@ self.numbers = ko.computed(function() {  // no args
         </ul>
     </div>
 
-    <div id="example4Behind" class="step slide" data-x="-2000" data-y="600" data-z="-1" data-rotate-y="180" data-scale="4">
+    <div id="example4Behind" class="step slide" data-x="-2000" data-y="-6500" data-z="-1" data-rotate-y="180" data-scale="4">
         <h1>Javascript</h1>
         <pre class="prettyprint lang-javascript">
 self.pairs = ko.computed(function() {
@@ -288,7 +288,7 @@ model.pairs.subscribe(view.update); // explicit
     </div>
 
 
-    <div id="endpage" class="live step" data-x="7000" data-y="1000" data-z="0" data-scale="17">
+    <div id="endpage" class="live step" data-x="500" data-y="-10000" data-z="0" data-scale="17">
         <img src="img/ko-logo.png" width="500px"/>
     </div>
 
