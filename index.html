@@ -133,6 +133,7 @@
 
         pre[class~='prettyprint'] {
             font-family: monospace;
+            font-size: 0.9em;
         }
     </style>
 </head>
@@ -190,10 +191,6 @@
 
     <div id="intro" class="live step slide" data-x="-4000" data-y="-1500" data-z="0">
         <h1>Knockout.js: a data-binding example</h1>
-        <ul>
-            <li>MVVM</li>
-            <li></li>
-        </ul>
     </div>
 
     <div id="example1" class="live step slide" data-x="-2000" data-y="-1500" data-z="0">
@@ -233,10 +230,10 @@ setInterval(model.update, 1000);
     <div id="example2Behind" class="step slide" data-x="0" data-y="-1500" data-z="-1" data-rotate-y="180">
         <h1>Javascript</h1>
         <pre class="prettyprint lang-javascript">
-self.numbers = ko.computed(function() {
+self.numbers = ko.computed(function() {  // no args
   var a = [];
   for (var i = 0; i <= 20; i++) {
-    if (i % self.count() != 0) {
+    if (i % self.count() != 0) { // just mention it
       a.push(i);
     }
   }
@@ -266,20 +263,21 @@ self.numbers = ko.computed(function() {
         <h1>Javascript</h1>
         <pre class="prettyprint lang-javascript">
 self.pairs = ko.computed(function() {
-  var p = []; var n = self.numbers();
+  var p = [];
+  var n = self.numbers();           // use computed
   for (var i = 0; i < n.length - 1; i++) {
     p.push({ x: n[i], y: n[i + 1] });
   }
   return p;
 };
-var chartView = new ChartView('#chart svg');
-model.pairs.subscribe(chartView.update);
+var view = new ChartView(...);
+model.pairs.subscribe(view.update); // explicit
 </pre>
         <h1>Html</h1>
         <pre class="prettyprint lang-html">
 &lt;ul data-bind="foreach: pairs"&gt;
   &lt;li&gt;(&lt;span data-bind="text: x"&gt;&lt;/span&gt;,
-    &lt;span data-bind="text: y"&gt;&lt;/span&gt;)&lt;/li&gt;
+       &lt;span data-bind="text: y"&gt;&lt;/span&gt;)&lt;/li&gt;
 &lt;/ul&gt;
 </pre>
     </div>
@@ -350,9 +348,9 @@ model.pairs.subscribe(chartView.update);
                 });
             };
 
-            var chartView = new ChartView('#chart svg');
-            model.pairs.subscribe(chartView.update);
-            chartView.update(model.pairs());
+            var view = new ChartView('#chart svg');
+            model.pairs.subscribe(view.update);
+            view.update(model.pairs());
 
             $(".live").each(function() { ko.applyBindings(model, this); });
 
