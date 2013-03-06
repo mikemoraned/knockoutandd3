@@ -120,7 +120,7 @@
             margin: 100px auto;
         }
 
-        .centered h1 {
+        .centered h2 {
             font-size: 300px;
             line-height: 400px;
             text-align: center;
@@ -138,13 +138,28 @@
             padding-bottom: 1em;
         }
 
-        div.progress {
-            height: 5px;
+        div.step {
+            position: relative;
         }
 
-        div.progress div.remaining {
-            height: 5px;
-            background-color: #d3d3d3;
+        div.progress {
+            position: absolute;
+            bottom: -1px;
+            color: rgba(213, 253, 255, 0.0);
+            font-size: 0.5em;
+        }
+
+        .step h1 {
+            font-size: 1.8em;
+            line-height:1.9em;
+        }
+
+        .step ul.main {
+           list-style-type: square;
+           font-size: 1.4em;
+           text-align: left;
+           line-height: 1.5em;
+           list-style-position: inside;
         }
     </style>
 </head>
@@ -200,22 +215,39 @@
 -->
 <div id="impress">
 
-    <div id="intro" class="live step slide" data-x="-10000" data-y="-1500" data-z="0">
-        <h1>Knockout.js: a data-binding example</h1>
+    <div id="intro" class="step slide" data-x="-10000" data-y="-1500" data-z="0">
+        <img src="img/ko-logo.png" width="500px"/>
+        <h1>... a data-binding example</h1>
+    </div>
+
+    <div id="whatis" class="step slide" data-x="-8000" data-y="-1500" data-z="0">
+        <h1>What is Knockout.js?</h1>
+
+        <ul class="main">
+            <li>Model-View-View Model</li>
+            <li>Declarative Binding</li>
+            <li>Not an &uuml;ber-framework</li>
+        </ul>
+    </div>
+
+    <div id="ummwhatis" class="step slide" data-x="-6000" data-y="-1500" data-z="0">
+        <h1>...but what is Knockout.js really?</h1>
+
+        <ul>
+            <li>Time for some examples...</li>
+        </ul>
     </div>
 
     <div id="example1" class="live step slide" data-x="-2000" data-y="-1500" data-z="0">
         <div class="centered">
-            <h1 data-bind="text: count"></h1>
+            <h2 data-bind="text: count"></h2>
         </div>
 
-        <div class="progress" data-bind="with: countdown">
-            <div class="remaining" data-bind="style: { width: percentage }, click: reset"></div>
-        </div>
+        <div class="progress" data-bind="text: countdown.percentage, click: countdown.reset"></div>
     </div>
 
-    <div id="example1Behind" class="step slide" data-x="-2000" data-y="-1500" data-z="-100" data-rotate-y="180">
-        <h1>Javascript</h1>
+    <div id="example1Behind" class="step slide" data-x="-2000" data-y="-1500" data-z="-1" data-rotate-y="180">
+        <h2>Javascript</h2>
 
         <pre class="prettyprint lang-javascript">
 var ViewModel = function() {
@@ -231,7 +263,7 @@ ko.applyBindings(model);
 setInterval(model.update, 1000);
 </pre>
 
-        <h1>Html</h1>
+        <h2>Html</h2>
 
         <pre class="prettyprint lang-html">
 &lt;h1 data-bind="text: count"&gt;&lt;h1&gt;
@@ -239,14 +271,16 @@ setInterval(model.update, 1000);
     </div>
 
     <div id="example2" class="live step slide small-li" data-x="-2000" data-y="-3500" data-scale="2">
-        <h1>Remove multiples of <span data-bind="text: count"></span></h1>
+        <h2>Remove multiples of <span data-bind="text: count"></span></h2>
         <ul data-bind="foreach: numbers">
             <li data-bind="text: $data"></li>
         </ul>
+
+        <div class="progress" data-bind="text: countdown.percentage, click: countdown.reset"></div>
     </div>
 
-    <div id="example2Behind" class="step slide" data-x="-2000" data-y="-3500" data-z="-100" data-rotate-y="180" data-scale="2">
-        <h1>Javascript</h1>
+    <div id="example2Behind" class="step slide" data-x="-2000" data-y="-3500" data-z="-1" data-rotate-y="180" data-scale="2">
+        <h2>Javascript</h2>
         <pre class="prettyprint lang-javascript">
 self.numbers = ko.computed(function() {  // no args
   var a = [];
@@ -258,10 +292,10 @@ self.numbers = ko.computed(function() {  // no args
   return a;
 });
 </pre>
-        <h1>Html</h1>
+        <h2>Html</h2>
         <pre class="prettyprint lang-html">
-&lt;h1&gt;Remove multiples of
-   &lt;span data-bind="text: count"&gt;&lt;/span&gt;&lt;/h1&gt;
+&lt;h2&gt;Remove multiples of
+   &lt;span data-bind="text: count"&gt;&lt;/span&gt;&lt;/h2&gt;
 &lt;ul data-bind="foreach: numbers"&gt;
    &lt;li data-bind="text: $data"&gt;&lt;/li&gt;
 &lt;/ul&gt;
@@ -275,10 +309,11 @@ self.numbers = ko.computed(function() {  // no args
         <ul data-bind="foreach: pairs">
             <li>(<span data-bind="text: x"></span>,<span data-bind="text: y"></span>)</li>
         </ul>
+        <div class="progress" data-bind="text: countdown.percentage, click: countdown.reset"></div>
     </div>
 
-    <div id="example4Behind" class="step slide" data-x="-2000" data-y="-6500" data-z="-100" data-rotate-y="180" data-scale="4">
-        <h1>Javascript</h1>
+    <div id="example4Behind" class="step slide" data-x="-2000" data-y="-6500" data-z="-1" data-rotate-y="180" data-scale="4">
+        <h2>Javascript</h2>
         <pre class="prettyprint lang-javascript">
 self.pairs = ko.computed(function() {
   var p = [];
@@ -291,7 +326,7 @@ self.pairs = ko.computed(function() {
 var view = new ChartView(...);
 model.pairs.subscribe(view.update); // explicit
 </pre>
-        <h1>Html</h1>
+        <h2>Html</h2>
         <pre class="prettyprint lang-html">
 &lt;ul data-bind="foreach: pairs"&gt;
   &lt;li&gt;(&lt;span data-bind="text: x"&gt;&lt;/span&gt;,
@@ -300,18 +335,13 @@ model.pairs.subscribe(view.update); // explicit
 </pre>
     </div>
 
-
-    <div id="endpage" class="live step" data-x="500" data-y="-10000" data-z="0" data-scale="17">
-        <img src="img/ko-logo.png" width="500px"/>
-    </div>
-
     <script type="text/javascript">
         $(function(){
             var Countdown = function() {
                 var self = this;
 
                 self.tickSize = 1000;
-                self.max = 30 * 1000; //5 * 60 * 1000;
+                self.max = 5 * 60 * 1000;
                 self.curr = ko.observable(0);
 
                 self.percentage = ko.computed(function() {
