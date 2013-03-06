@@ -9,6 +9,7 @@
     "google-code-prettify": "~1.0.0",
     "underscore": "~1.4.4",
     "impress": "latest",
-    "impress.js": "~0.5.3"
+    "impress.js": "~0.5.3",
+    "moment": "~2.0.0"
   }
 }
