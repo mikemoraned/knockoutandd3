@@ -101,6 +101,7 @@
     <script src="components/jquery/jquery.min.js"></script>
     <script src="components/google-code-prettify/src/prettify.js"></script>
     <script src="components/underscore/underscore-min.js"></script>
+    <script src="components/moment/moment.js"></script>
 
     <link href="components/nvd3/src/nv.d3.css" rel="stylesheet">
     <link href="components/google-code-prettify/src/prettify.css" rel="stylesheet">
@@ -215,27 +216,40 @@
 -->
 <div id="impress">
 
-    <div id="intro" class="step slide" data-x="-10000" data-y="-1500" data-z="0">
+    <script type="text/html" id="progress-tmpl">
+        <div class="progress" data-bind="click: reset">
+            <span data-bind="text: percentageRemaining"></span>
+            <span data-bind="text: momentsRemaining"></span>
+        </div>
+    </script>
+
+    <div id="intro" class="live step slide" data-x="-10000" data-y="-1500" data-z="0">
         <img src="img/ko-logo.png" width="500px"/>
-        <h1>... a data-binding example</h1>
+        <h1>... an example of data-binding in Javascript</h1>
+
+        <div data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
     </div>
 
-    <div id="whatis" class="step slide" data-x="-8000" data-y="-1500" data-z="0">
+    <div id="whatis" class="live step slide" data-x="-8000" data-y="-1500" data-z="0">
         <h1>What is Knockout.js?</h1>
 
         <ul class="main">
-            <li>Model-View-View Model</li>
-            <li>Declarative Binding</li>
+            <li>MVVM implementation</li>
+            <li>Declarative Bindings</li>
             <li>Not an &uuml;ber-framework</li>
         </ul>
+
+        <div data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
     </div>
 
-    <div id="ummwhatis" class="step slide" data-x="-6000" data-y="-1500" data-z="0">
-        <h1>...but what is Knockout.js really?</h1>
+    <div id="ummwhatis" class="live step slide" data-x="-6000" data-y="-1500" data-z="0">
+        <h1>...but what does all that mean?</h1>
 
         <ul>
             <li>Time for some examples...</li>
         </ul>
+
+        <div data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
     </div>
 
     <div id="example1" class="live step slide" data-x="-2000" data-y="-1500" data-z="0">
@@ -243,7 +257,7 @@
             <h2 data-bind="text: count"></h2>
         </div>
 
-        <div class="progress" data-bind="text: countdown.percentage, click: countdown.reset"></div>
+        <div data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
     </div>
 
     <div id="example1Behind" class="step slide" data-x="-2000" data-y="-1500" data-z="-1" data-rotate-y="180">
@@ -268,6 +282,8 @@ setInterval(model.update, 1000);
         <pre class="prettyprint lang-html">
 &lt;h1 data-bind="text: count"&gt;&lt;h1&gt;
 </pre>
+
+        <div class="live" data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
     </div>
 
     <div id="example2" class="live step slide small-li" data-x="-2000" data-y="-3500" data-scale="2">
@@ -276,7 +292,7 @@ setInterval(model.update, 1000);
             <li data-bind="text: $data"></li>
         </ul>
 
-        <div class="progress" data-bind="text: countdown.percentage, click: countdown.reset"></div>
+        <div data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
     </div>
 
     <div id="example2Behind" class="step slide" data-x="-2000" data-y="-3500" data-z="-1" data-rotate-y="180" data-scale="2">
@@ -300,6 +316,8 @@ self.numbers = ko.computed(function() {  // no args
    &lt;li data-bind="text: $data"&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </pre>
+
+        <div class="live" data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
     </div>
 
     <div id="example4" class="live step slide small-li" data-x="-2000" data-y="-6500" data-z="0" data-scale="4">
@@ -309,7 +327,7 @@ self.numbers = ko.computed(function() {  // no args
         <ul data-bind="foreach: pairs">
             <li>(<span data-bind="text: x"></span>,<span data-bind="text: y"></span>)</li>
         </ul>
-        <div class="progress" data-bind="text: countdown.percentage, click: countdown.reset"></div>
+        <div data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
     </div>
 
     <div id="example4Behind" class="step slide" data-x="-2000" data-y="-6500" data-z="-1" data-rotate-y="180" data-scale="4">
@@ -333,6 +351,17 @@ model.pairs.subscribe(view.update); // explicit
        &lt;span data-bind="text: y"&gt;&lt;/span&gt;)&lt;/li&gt;
 &lt;/ul&gt;
 </pre>
+        <div class="live" data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
+    </div>
+
+    <div id="outro" class="live step slide" data-x="4000" data-y="-6500" data-z="0" data-scale="4">
+        <h1>So, what is Knockout.js?</h1>
+        <ul class="main">
+            <li>DOM updates, without the fuss</li>
+            <li>Do-nothing data dependencies</li>
+            <li>Works well with others</li>
+        </ul>
+        <div data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
     </div>
 
     <script type="text/javascript">
@@ -344,8 +373,20 @@ model.pairs.subscribe(view.update); // explicit
                 self.max = 5 * 60 * 1000;
                 self.curr = ko.observable(0);
 
-                self.percentage = ko.computed(function() {
-                    return "" + (100.0 * Math.min(1.0, (self.max - self.curr()) / self.max)).toFixed(0) + "%";
+                self.timeRemaining = ko.computed(function() {
+                    return Math.max(0, self.max - self.curr());
+                });
+
+                self.proportionRemaining = ko.computed(function() {
+                    return self.timeRemaining() / self.max;
+                });
+
+                self.momentsRemaining = ko.computed(function() {
+                    return moment.duration(self.timeRemaining()).humanize();
+                });
+
+                self.percentageRemaining = ko.computed(function() {
+                    return "" + (100.0 * self.proportionRemaining()).toFixed(0) + "%";
                 });
 
                 self.start = function() {
