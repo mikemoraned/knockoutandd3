@@ -224,8 +224,8 @@
     </script>
 
     <div id="intro" class="live step slide" data-x="-10000" data-y="-1500" data-z="0">
-        <img src="img/ko-logo.png" width="500px"/>
-        <h1>... an example of data-binding in Javascript</h1>
+        <img src="img/ko-logo.png"/>
+        <h1 style="font-style: italic;">... data-binding in Javascript</h1>
 
         <div data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
     </div>
@@ -234,20 +234,19 @@
         <h1>What is Knockout.js?</h1>
 
         <ul class="main">
-            <li>MVVM implementation</li>
+            <li><abbr title="Model View View Model">MVVM</abbr> implementation</li>
             <li>Declarative Bindings</li>
-            <li>Not an &uuml;ber-framework</li>
+            <li>Automatic Dependency Tracking</li>
+            <li>Not an &Uuml;ber-framework</li>
         </ul>
 
         <div data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
     </div>
 
     <div id="ummwhatis" class="live step slide" data-x="-6000" data-y="-1500" data-z="0">
-        <h1>...but what does all that mean?</h1>
+        <h1>... but what does all that mean?</h1>
 
-        <ul>
-            <li>Time for some examples...</li>
-        </ul>
+        <div>Time for some examples...</div>
 
         <div data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
     </div>
@@ -261,6 +260,12 @@
     </div>
 
     <div id="example1Behind" class="step slide" data-x="-2000" data-y="-1500" data-z="-1" data-rotate-y="180">
+        <h2>Html</h2>
+
+        <pre class="prettyprint lang-html">
+&lt;h1 data-bind="text: count"&gt;&lt;h1&gt;
+</pre>
+
         <h2>Javascript</h2>
 
         <pre class="prettyprint lang-javascript">
@@ -272,30 +277,36 @@ var ViewModel = function() {
     self.count((prev + 1) % 20); // update
   };
 };
-var model = new ViewModel();
-ko.applyBindings(model);
+var model = new ViewModel();     // create
+ko.applyBindings(model);         // apply
 setInterval(model.update, 1000);
 </pre>
 
-        <h2>Html</h2>
-
-        <pre class="prettyprint lang-html">
-&lt;h1 data-bind="text: count"&gt;&lt;h1&gt;
-</pre>
 
         <div class="live" data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
     </div>
 
     <div id="example2" class="live step slide small-li" data-x="-2000" data-y="-3500" data-scale="2">
         <h2>Remove multiples of <span data-bind="text: count"></span></h2>
+        <p>
         <ul data-bind="foreach: numbers">
             <li data-bind="text: $data"></li>
         </ul>
+        </p>
 
         <div data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
     </div>
 
     <div id="example2Behind" class="step slide" data-x="-2000" data-y="-3500" data-z="-1" data-rotate-y="180" data-scale="2">
+        <h2>Html</h2>
+        <pre class="prettyprint lang-html">
+&lt;h2&gt;Remove multiples of
+   &lt;span data-bind="text: count"&gt;&lt;/span&gt;&lt;/h2&gt;
+&lt;ul data-bind="foreach: numbers"&gt;
+   &lt;li data-bind="text: $data"&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+
         <h2>Javascript</h2>
         <pre class="prettyprint lang-javascript">
 self.numbers = ko.computed(function() {  // no args
@@ -308,15 +319,6 @@ self.numbers = ko.computed(function() {  // no args
   return a;
 });
 </pre>
-        <h2>Html</h2>
-        <pre class="prettyprint lang-html">
-&lt;h2&gt;Remove multiples of
-   &lt;span data-bind="text: count"&gt;&lt;/span&gt;&lt;/h2&gt;
-&lt;ul data-bind="foreach: numbers"&gt;
-   &lt;li data-bind="text: $data"&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</pre>
-
         <div class="live" data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
     </div>
 
@@ -331,6 +333,13 @@ self.numbers = ko.computed(function() {  // no args
     </div>
 
     <div id="example4Behind" class="step slide" data-x="-2000" data-y="-6500" data-z="-1" data-rotate-y="180" data-scale="4">
+        <h2>Html</h2>
+        <pre class="prettyprint lang-html">
+&lt;svg ... &gt;&lt;ul data-bind="foreach: pairs"&gt;
+  &lt;li&gt;(&lt;span data-bind="text: x"&gt;&lt;/span&gt;,
+       &lt;span data-bind="text: y"&gt;&lt;/span&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
         <h2>Javascript</h2>
         <pre class="prettyprint lang-javascript">
 self.pairs = ko.computed(function() {
@@ -344,22 +353,34 @@ self.pairs = ko.computed(function() {
 var view = new ChartView(...);
 model.pairs.subscribe(view.update); // explicit
 </pre>
-        <h2>Html</h2>
-        <pre class="prettyprint lang-html">
-&lt;ul data-bind="foreach: pairs"&gt;
-  &lt;li&gt;(&lt;span data-bind="text: x"&gt;&lt;/span&gt;,
-       &lt;span data-bind="text: y"&gt;&lt;/span&gt;)&lt;/li&gt;
-&lt;/ul&gt;
-</pre>
         <div class="live" data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
     </div>
 
-    <div id="outro" class="live step slide" data-x="4000" data-y="-6500" data-z="0" data-scale="4">
+    <div id="whatisoutro" class="live step slide" data-x="4000" data-y="-6500" data-z="0" data-scale="4">
         <h1>So, what is Knockout.js?</h1>
         <ul class="main">
             <li>DOM updates, without the fuss</li>
             <li>Do-nothing data dependencies</li>
             <li>Works well with others</li>
+        </ul>
+        <div data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
+    </div>
+
+    <div id="outro" class="live step slide" data-x="10000" data-y="-6500" data-z="0" data-scale="4">
+        <h1>When would you use it?</h1>
+        <ul class="main">
+            <li>Websites (14kb compressed, Supports all mainstream browsers)</li>
+            <li>Apps (makes what should be easy actually easy)</li>
+            <li>Just for fun!</li>
+        </ul>
+        <div data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
+    </div>
+
+    <div id="databinding" class="live step slide" data-x="16000" data-y="-6500" data-z="0" data-scale="4">
+        <h1>Why Knockout.js?</h1>
+        <ul class="main">
+            <li>Separable, <a href="http://knockoutjs.com/documentation/introduction.html">documented</a>, good error messages, <a href="https://github.com/SteveSanderson/knockout/contributors">actively developed</a></li>
+            <li>But there are plenty of others (e.g. for a complete framework, try <a href="http://angularjs.org/">angular.js</a>)</li>
         </ul>
         <div data-bind="template: { name: 'progress-tmpl', data: countdown }"></div>
     </div>
